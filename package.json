@@ -1,0 +1,8 @@
+{
+  "name": "nbook",
+  "version": "0.0.0",
+  "description": "nbook - an addressbook written in nodejs with blessed. A drop-in replacement for abook",
+  "main": "src/index.js",
+  "author": "Stephan Bösch-Plepelits <skunk@xover.mud.at>",
+  "license": "GPL-3.0"
+}
