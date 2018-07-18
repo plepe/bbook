@@ -7,6 +7,18 @@ const screen = blessed.screen({
 
 screen.title = 'nbook'
 
+let database = [
+  { name: 'Alice', email: 'alice@example.com', phone: '01/2345678' },
+  { name: 'Bob', email: 'bob@example.com', country: 'AT' },
+  { name: 'Alice', email: 'alice@example.com', phone: '01/2345678' },
+  { name: 'Bob', email: 'bob@example.com', country: 'AT' }
+]
+let rows = [
+  { id: 'name', title: 'Name' },
+  { id: 'email', title: 'E-Mail address' },
+  { id: 'phone', title: 'Phone' }
+]
+
 let table = blessed.listtable({
   top: 2,
   left: 0,
@@ -31,24 +43,33 @@ let table = blessed.listtable({
   }
 })
 
-table.setData([
-  [ 'Name', 'E-Mail address', 'Phone' ],
-  [ 'Bob', 'bob@example.com', '' ],
-  [ 'Alice', 'alice@example.com', '01/2345678' ],
-  [ 'Bob', 'bob@example.com', '' ],
-  [ 'Alice', 'alice@example.com', '01/2345678' ],
-  [ 'Bob', 'bob@example.com', '' ],
-  [ 'Alice', 'alice@example.com', '01/2345678' ],
-  [ 'Bob', 'bob@example.com', '' ],
-  [ 'Alice', 'alice@example.com', '01/2345678' ],
-  [ 'Bob', 'bob@example.com', '' ]
-])
+let header = rows.map(row => row.title)
+let data = database.map(entry =>
+  rows.map(row => entry[row.id] || '')
+)
+table.setData([ header ].concat(data))
 
 screen.append(table)
 table.focus()
 
-screen.key('q', function() {
+table.key('q', function() {
     return screen.destroy()
+})
+
+table.on('select', function (data) {
+  let x = blessed.box({
+    top: 5,
+    left: 5,
+    width: 20,
+    height: 1,
+    content: JSON.stringify(data.getText())
+  })
+
+  screen.append(x)
+
+  screen.render()
+  screen.destroy()
+  console.log(data.index)
 })
 
 screen.render()
