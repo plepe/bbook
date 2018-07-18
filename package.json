@@ -3,6 +3,12 @@
   "version": "0.0.0",
   "description": "nbook - an addressbook written in nodejs with blessed. A drop-in replacement for abook",
   "main": "src/index.js",
+  "bin": {
+    "nbook": "bin/nbook"
+  },
   "author": "Stephan Bösch-Plepelits <skunk@xover.mud.at>",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "dependencies": {
+    "neo-blessed": "^0.2.0"
+  }
 }
