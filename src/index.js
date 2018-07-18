@@ -55,6 +55,9 @@ table.focus()
 table.key('q', function() {
     return screen.destroy()
 })
+screen.key('C-c', function () {
+  screen.destroy()
+})
 
 table.on('select', function (data) {
   let x = blessed.box({
