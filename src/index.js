@@ -60,19 +60,29 @@ screen.key('C-c', function () {
 })
 
 table.on('select', function (data) {
+  let row = database[data.index]
+
   let x = blessed.box({
     top: 5,
     left: 5,
     width: 20,
-    height: 1,
-    content: JSON.stringify(data.getText())
+    height: 10,
+    content: JSON.stringify(row, null, '  '),
+    style: {
+      bg: 'red'
+    }
   })
 
   screen.append(x)
 
+  x.focus()
+
+  x.key('q', function () {
+    x.destroy()
+    screen.render()
+  })
+
   screen.render()
-  screen.destroy()
-  console.log(data.index)
 })
 
 screen.render()
