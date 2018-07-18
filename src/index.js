@@ -8,10 +8,10 @@ const screen = blessed.screen({
 screen.title = 'nbook'
 
 let database = [
-  { name: 'Alice', email: 'alice@example.com', phone: '01/2345678' },
-  { name: 'Bob', email: 'bob@example.com', country: 'AT' },
-  { name: 'Alice', email: 'alice@example.com', phone: '01/2345678' },
-  { name: 'Bob', email: 'bob@example.com', country: 'AT' }
+  { name: 'Alice1', email: 'alice@example.com', phone: '01/2345678' },
+  { name: 'Bob1', email: 'bob@example.com', country: 'AT' },
+  { name: 'Alice2', email: 'alice@example.com', phone: '01/2345678' },
+  { name: 'Bob2', email: 'bob@example.com', country: 'AT' }
 ]
 let rows = [
   { id: 'name', title: 'Name' },
@@ -43,12 +43,6 @@ let table = blessed.listtable({
   }
 })
 
-let header = rows.map(row => row.title)
-let data = database.map(entry =>
-  rows.map(row => entry[row.id] || '')
-)
-table.setData([ header ].concat(data))
-
 screen.append(table)
 table.focus()
 
@@ -60,14 +54,15 @@ screen.key('C-c', function () {
 })
 
 table.on('select', function (data) {
-  let row = database[data.index]
+  let index = data.index - 2 // why -2?
+  let row = database[index]
 
-  let x = blessed.box({
+  let x = blessed.Textarea({
     top: 5,
     left: 5,
     width: 20,
     height: 10,
-    content: JSON.stringify(row, null, '  '),
+    value: JSON.stringify(row, null, '  '),
     style: {
       bg: 'red'
     }
@@ -76,13 +71,28 @@ table.on('select', function (data) {
   screen.append(x)
 
   x.focus()
-
-  x.key('q', function () {
+  x.readEditor(() => {
+    database[index] = JSON.parse(x.value)
     x.destroy()
-    screen.render()
+    updateDisplay()
+  })
+
+  x.key('C-x', function () {
+    database[index] = JSON.parse(x.value)
+    x.destroy()
+    updateDisplay()
   })
 
   screen.render()
 })
 
-screen.render()
+function updateDisplay () {
+  let header = rows.map(row => row.title)
+  let data = database.map(entry =>
+    rows.map(row => entry[row.id] || '')
+  )
+  table.setData([ header ].concat(data))
+  screen.render()
+}
+
+updateDisplay()
