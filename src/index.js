@@ -21,8 +21,8 @@ let rows = [
   { id: 'country', title: 'Country' }
 ]
 
-let pager = new Pager({ db, rows })
-pager.show(screen)
+let pager = new Pager({ db, rows, screen })
+pager.show()
 
 screen.key('C-c', function () {
   screen.destroy()

@@ -8,11 +8,10 @@ class Pager {
     this.options = options
 
     this.db = this.options.db
+    this.screen = this.options.screen
   }
 
-  show (screen) {
-    this.screen = screen
-
+  show () {
     this.table = blessed.listtable({
       top: 2,
       left: 0,
@@ -57,7 +56,7 @@ class Pager {
       let index = this.table.selected - 1
       let id = this.database[index].id
 
-      db.remove(id, (err) => {
+      this.db.remove(id, (err) => {
         if (err) {
           throw(err)
         }
@@ -69,11 +68,12 @@ class Pager {
 
   showEntry (id) {
     let entry = new Entry(id, {
-      db: this.options.db,
+      db: this.db,
+      screen: this.screen,
       rows: this.options.rows
     })
 
-    entry.show(this.screen)
+    entry.show()
 
     entry.on('update', () => {
       this.updateDisplay()
@@ -82,8 +82,6 @@ class Pager {
       ee.allOff(entry)
       entry = null
     })
-
-    this.screen.render()
   }
 
   updateDisplay () {

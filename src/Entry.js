@@ -5,11 +5,14 @@ class Entry {
   constructor (id, options) {
     this.id = id
     this.options = options
+
+    this.db = this.options.db
+    this.screen = this.options.screen
   }
 
   get (callback) {
     if (this.id) {
-      this.options.db.get(this.id, (err, data) => {
+      this.db.get(this.id, (err, data) => {
         this.data = data
         callback(null)
       })
@@ -24,8 +27,7 @@ class Entry {
     this.screen.render()
   }
 
-  show (screen) {
-    this.screen = screen
+  show () {
     this.win = blessed.Textarea({
       top: 5,
       left: 5,
@@ -50,7 +52,7 @@ class Entry {
 
     this.win.key('e', () => {
       this.win.readEditor(data => {
-        this.options.db.set(this.id, JSON.parse(data), (err, id) => {
+        this.db.set(this.id, JSON.parse(data), (err, id) => {
           if (err) {
             throw(err)
           }
