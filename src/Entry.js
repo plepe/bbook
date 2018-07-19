@@ -7,8 +7,26 @@ class Entry {
     this.options = options
   }
 
+  get (callback) {
+    if (this.id) {
+      this.options.db.get(this.id, (err, data) => {
+        this.data = data
+        callback(null)
+      })
+    } else {
+      this.data = {}
+      callback(null)
+    }
+  }
+
+  updateWindow () {
+    this.win.setValue(JSON.stringify(this.data, null, '  '))
+    this.screen.render()
+  }
+
   show (screen) {
-    let win = blessed.Textarea({
+    this.screen = screen
+    this.win = blessed.Textarea({
       top: 5,
       left: 5,
       width: 20,
@@ -18,29 +36,21 @@ class Entry {
       }
     })
 
-    screen.append(win)
+    this.screen.append(this.win)
 
-    if (this.id) {
-      this.options.db.get(this.id, (err, data) => {
-        this.data = data
-        win.setValue(JSON.stringify(this.data, null, '  '))
-        screen.render()
-      })
-    } else {
-      this.data = {}
-      win.setValue(JSON.stringify(this.data, null, '  '))
-      screen.render()
-    }
+    this.get(err => {
+      if (err) {
+        throw(err)
+      }
 
-    win.focus()
+      this.updateWindow()
+    })
 
-    win.key('e', () => {
-      win.readEditor(() => {
-        this.data = JSON.parse(win.getValue())
-        win.setValue(JSON.stringify(this.data, null, '  '))
-        screen.render()
+    this.win.focus()
 
-        this.options.db.set(this.id, this.data, (err, id) => {
+    this.win.key('e', () => {
+      this.win.readEditor(data => {
+        this.options.db.set(this.id, JSON.parse(data), (err, id) => {
           if (err) {
             throw(err)
           }
@@ -50,13 +60,21 @@ class Entry {
           }
 
           this.emit('update')
+
+          this.get(err => {
+            if (err) {
+              throw(err)
+            }
+
+            this.updateWindow()
+          })
         })
       })
     })
 
-    win.key([ 'escape', 'q' ], () => {
-      win.destroy()
-      screen.render()
+    this.win.key([ 'escape', 'q' ], () => {
+      this.win.destroy()
+      this.screen.render()
 
       this.emit('close')
     })
