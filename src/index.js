@@ -1,5 +1,7 @@
 const blessed = require('neo-blessed')
 
+const Database = require('./Database')
+
 const screen = blessed.screen({
   smartCSR: true,
   fullUnicode: true
@@ -7,12 +9,9 @@ const screen = blessed.screen({
 
 screen.title = 'nbook'
 
-let database = [
-  { name: 'Alice1', email: 'alice@example.com', phone: '01/2345678' },
-  { name: 'Bob1', email: 'bob@example.com', country: 'AT' },
-  { name: 'Alice2', email: 'alice@example.com', phone: '01/2345678' },
-  { name: 'Bob2', email: 'bob@example.com', country: 'AT' }
-]
+let db = new Database('nbook.db')
+
+let database
 let rows = [
   { id: 'name', title: 'Name' },
   { id: 'email', title: 'E-Mail address' },
@@ -88,11 +87,17 @@ table.on('select', function (data) {
 
 function updateDisplay () {
   let header = rows.map(row => row.title)
-  let data = database.map(entry =>
-    rows.map(row => entry[row.id] || '')
-  )
-  table.setData([ header ].concat(data))
-  screen.render()
+
+  db.search('', (err, result) => {
+    database = result
+
+    let data = database.map(entry =>
+      rows.map(row => entry[row.id] || '')
+    )
+
+    table.setData([ header ].concat(data))
+    screen.render()
+  })
 }
 
 updateDisplay()
