@@ -61,6 +61,10 @@ class Database {
   }
 
   set (id, data, callback) {
+    if (!id) {
+      this.insert(data, callback)
+    }
+
     let cols = []
     let param = []
 
@@ -90,6 +94,44 @@ class Database {
 
       callback(null)
     })
+  }
+
+  insert (data, callback) {
+    let cols = []
+    let param = []
+    let values = []
+
+    // TODO: check validity of row name
+    for (var k in data) {
+      cols.push(k)
+      values.push('?')
+      param.push(data[k])
+    }
+
+    let that = this // hack, so we can get the lastId of the query
+    this.db.run(
+      'insert into nbook (' + cols.join(', ') + ') values (' + values.join(', ') + ')',
+      param,
+      function (err) {
+        if (err) {
+          if (err.errno === 1) {
+            that.init((err) => {
+              if (err) {
+                return callback(err)
+              }
+
+              that.insert(data, callback)
+            })
+
+            return
+          }
+
+          return callback(err)
+        }
+
+        callback(null, this.lastID)
+      }
+    )
   }
 }
 

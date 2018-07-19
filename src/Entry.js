@@ -20,11 +20,17 @@ class Entry {
 
     screen.append(win)
 
-    this.options.db.get(this.id, (err, data) => {
-      this.data = data
+    if (this.id) {
+      this.options.db.get(this.id, (err, data) => {
+        this.data = data
+        win.setValue(JSON.stringify(this.data, null, '  '))
+        screen.render()
+      })
+    } else {
+      this.data = {}
       win.setValue(JSON.stringify(this.data, null, '  '))
       screen.render()
-    })
+    }
 
     win.focus()
 
@@ -34,9 +40,13 @@ class Entry {
         win.setValue(JSON.stringify(this.data, null, '  '))
         screen.render()
 
-        this.options.db.set(this.id, this.data, (err) => {
+        this.options.db.set(this.id, this.data, (err, id) => {
           if (err) {
             throw(err)
+          }
+
+          if (id) {
+            this.id = id
           }
 
           this.emit('update')

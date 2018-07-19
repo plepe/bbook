@@ -50,14 +50,14 @@ table.focus()
 table.key([ 'escape', 'q' ], function() {
     return screen.destroy()
 })
+table.key([ 'insert', 'a' ], function() {
+  showEntry(null)
+})
 screen.key('C-c', function () {
   screen.destroy()
 })
 
-table.on('select', function (data) {
-  let index = data.index - 2 // why -2?
-  let id = database[index].id
-
+function showEntry (id) {
   let entry = new Entry(id, {
     db,
     rows
@@ -74,6 +74,13 @@ table.on('select', function (data) {
   })
 
   screen.render()
+}
+
+table.on('select', function (data) {
+  let index = data.index - 2 // why -2?
+  let id = database[index].id
+
+  showEntry(id)
 })
 
 function updateDisplay () {
