@@ -12,5 +12,11 @@
     "event-emitter": "^0.3.5",
     "neo-blessed": "^0.2.0",
     "sqlite3": "^4.0.2"
+  },
+  "devDependencies": {
+    "standard": "^11.0.1"
+  },
+  "scripts": {
+    "lint": "standard --fix src/*.js"
   }
 }

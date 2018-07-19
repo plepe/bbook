@@ -58,7 +58,7 @@ class Pager {
 
       this.db.remove(id, (err) => {
         if (err) {
-          throw(err)
+          throw (err)
         }
 
         this.updateDisplay()
@@ -90,6 +90,10 @@ class Pager {
       .map(row => row.title)
 
     this.db.search('', (err, result) => {
+      if (err) {
+        throw (err)
+      }
+
       this.database = result
 
       let data = result.map(entry =>

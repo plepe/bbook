@@ -143,7 +143,6 @@ class Database {
       callback(null)
     })
   }
-
 }
 
 module.exports = Database

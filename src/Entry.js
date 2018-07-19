@@ -14,7 +14,7 @@ class Entry {
     if (this.id) {
       this.db.get(this.id, (err, data) => {
         this.data = data
-        callback(null)
+        callback(err)
       })
     } else {
       this.data = {}
@@ -42,7 +42,7 @@ class Entry {
 
     this.get(err => {
       if (err) {
-        throw(err)
+        throw (err)
       }
 
       this.updateWindow()
@@ -54,7 +54,7 @@ class Entry {
       this.win.readEditor(data => {
         this.db.set(this.id, JSON.parse(data), (err, id) => {
           if (err) {
-            throw(err)
+            throw (err)
           }
 
           if (id) {
@@ -65,7 +65,7 @@ class Entry {
 
           this.get(err => {
             if (err) {
-              throw(err)
+              throw (err)
             }
 
             this.updateWindow()
