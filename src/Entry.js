@@ -23,12 +23,25 @@ class Entry {
   }
 
   updateWindow () {
-    this.win.setValue(JSON.stringify(this.data, null, '  '))
+    for (var k in this.options.rows) {
+      let row = this.options.rows
+
+      let input = blessed.Textbox({
+        width: 40,
+        name: row.title
+      })
+
+      input.setValue(this.data[k] || '')
+
+      this.win.append(input)
+    }
+
     this.screen.render()
   }
 
   show () {
-    this.win = blessed.Textarea({
+    this.win = blessed.Form({
+      keys: true,
       top: 5,
       left: 5,
       width: 20,
