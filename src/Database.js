@@ -133,6 +133,17 @@ class Database {
       }
     )
   }
+
+  remove (id, callback) {
+    this.db.run('delete from nbook where id = ?', id, (err, result) => {
+      if (err) {
+        return callback(err)
+      }
+
+      callback(null)
+    })
+  }
+
 }
 
 module.exports = Database

@@ -84,6 +84,18 @@ table.on('select', function (data) {
 
   showEntry(id)
 })
+table.key([ 'delete', 'r' ], function (data) {
+  let index = table.selected - 1
+  let id = database[index].id
+
+  db.remove(id, (err) => {
+    if (err) {
+      throw(err)
+    }
+
+    updateDisplay()
+  })
+})
 
 function updateDisplay () {
   let header = rows.map(row => row.title)
