@@ -1,4 +1,5 @@
 const blessed = require('neo-blessed')
+const ee = require('event-emitter')
 
 class Entry {
   constructor (id, options) {
@@ -22,25 +23,36 @@ class Entry {
     this.options.db.get(this.id, (err, data) => {
       this.data = data
       win.setValue(JSON.stringify(this.data, null, '  '))
-
-      win.readEditor(() => {
-        this.options.db.set(this.id, JSON.parse(win.getValue()), (err) => {
-          if (err) {
-            throw(err)
-          }
-
-          win.destroy()
-          screen.render()
-        })
-      })
+      screen.render()
     })
 
     win.focus()
 
-    win.key('C-x', function () {
+    win.key('e', () => {
+      win.readEditor(() => {
+        this.data = JSON.parse(win.getValue())
+        win.setValue(JSON.stringify(this.data, null, '  '))
+        screen.render()
+
+        this.options.db.set(this.id, this.data, (err) => {
+          if (err) {
+            throw(err)
+          }
+
+          this.emit('update')
+        })
+      })
+    })
+
+    win.key([ 'escape', 'q' ], function () {
       win.destroy()
+      screen.render()
+
+      this.emit('close')
     })
   }
 }
+
+ee(Entry.prototype)
 
 module.exports = Entry

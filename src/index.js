@@ -47,7 +47,7 @@ let table = blessed.listtable({
 screen.append(table)
 table.focus()
 
-table.key('q', function() {
+table.key([ 'escape', 'q' ], function() {
     return screen.destroy()
 })
 screen.key('C-c', function () {
@@ -64,6 +64,14 @@ table.on('select', function (data) {
   })
 
   entry.show(screen)
+
+  entry.on('update', () => {
+    updateDisplay()
+  })
+  entry.on('close', () => {
+    entry.allOff()
+    delete entry
+  })
 
   screen.render()
 })
