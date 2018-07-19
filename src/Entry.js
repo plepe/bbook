@@ -54,7 +54,7 @@ class Entry {
       })
     })
 
-    win.key([ 'escape', 'q' ], function () {
+    win.key([ 'escape', 'q' ], () => {
       win.destroy()
       screen.render()
 

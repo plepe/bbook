@@ -1,4 +1,6 @@
 const blessed = require('neo-blessed')
+const ee = require('event-emitter')
+ee.allOff = require('event-emitter/all-off')
 
 const Database = require('./Database')
 const Entry = require('./Entry')
@@ -69,7 +71,7 @@ function showEntry (id) {
     updateDisplay()
   })
   entry.on('close', () => {
-    entry.allOff()
+    ee.allOff(entry)
     delete entry
   })
 
