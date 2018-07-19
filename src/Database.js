@@ -37,6 +37,60 @@ class Database {
       callback(null, result)
     })
   }
+
+  get (id, callback) {
+    this.db.all('select * from nbook where id = ?', [ id ], (err, result) => {
+      if (err) {
+        if (err.errno === 1) {
+          this.init((err) => {
+            if (err) {
+              return callback(err)
+            }
+
+            this.get(id, callback)
+          })
+
+          return
+        }
+
+        return callback(err)
+      }
+
+      callback(null, result.length ? result[0] : null)
+    })
+  }
+
+  set (id, data, callback) {
+    let cols = []
+    let param = []
+
+    // TODO: check validity of row name
+    for (var k in data) {
+      cols.push(k + ' = ?')
+      param.push(data[k])
+    }
+    param.push(id)
+
+    this.db.run('update nbook set ' + cols.join(', ') + ' where id = ?', param, (err, result) => {
+      if (err) {
+        if (err.errno === 1) {
+          this.init((err) => {
+            if (err) {
+              return callback(err)
+            }
+
+            this.set(id, data, callback)
+          })
+
+          return
+        }
+
+        return callback(err)
+      }
+
+      callback(null)
+    })
+  }
 }
 
 module.exports = Database

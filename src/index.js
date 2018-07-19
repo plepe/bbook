@@ -1,6 +1,7 @@
 const blessed = require('neo-blessed')
 
 const Database = require('./Database')
+const Entry = require('./Entry')
 
 const screen = blessed.screen({
   smartCSR: true,
@@ -15,7 +16,8 @@ let database
 let rows = [
   { id: 'name', title: 'Name' },
   { id: 'email', title: 'E-Mail address' },
-  { id: 'phone', title: 'Phone' }
+  { id: 'phone', title: 'Phone' },
+  { id: 'country', title: 'Country' }
 ]
 
 let table = blessed.listtable({
@@ -54,33 +56,14 @@ screen.key('C-c', function () {
 
 table.on('select', function (data) {
   let index = data.index - 2 // why -2?
-  let row = database[index]
+  let id = database[index].id
 
-  let x = blessed.Textarea({
-    top: 5,
-    left: 5,
-    width: 20,
-    height: 10,
-    value: JSON.stringify(row, null, '  '),
-    style: {
-      bg: 'red'
-    }
+  let entry = new Entry(id, {
+    db,
+    rows
   })
 
-  screen.append(x)
-
-  x.focus()
-  x.readEditor(() => {
-    database[index] = JSON.parse(x.value)
-    x.destroy()
-    updateDisplay()
-  })
-
-  x.key('C-x', function () {
-    database[index] = JSON.parse(x.value)
-    x.destroy()
-    updateDisplay()
-  })
+  entry.show(screen)
 
   screen.render()
 })
