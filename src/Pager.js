@@ -85,13 +85,17 @@ class Pager {
   }
 
   updateDisplay () {
-    let header = this.options.rows.map(row => row.title)
+    let header = this.options.rows
+      .filter(row => row.pager)
+      .map(row => row.title)
 
     this.db.search('', (err, result) => {
       this.database = result
 
       let data = result.map(entry =>
-        this.options.rows.map(row => entry[row.id] || '')
+        this.options.rows
+          .filter(row => row.pager)
+          .map(row => entry[row.id] || '')
       )
 
       this.table.setData([ header ].concat(data))

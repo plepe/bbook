@@ -15,10 +15,10 @@ screen.title = 'nbook'
 let db = new Database('nbook.db')
 
 let rows = [
-  { id: 'name', title: 'Name' },
-  { id: 'email', title: 'E-Mail address' },
-  { id: 'phone', title: 'Phone' },
-  { id: 'country', title: 'Country' }
+  { id: 'name', title: 'Name', pager: true },
+  { id: 'email', title: 'E-Mail address', pager: true },
+  { id: 'phone', title: 'Phone', pager: true },
+  { id: 'country', title: 'Country', pager: false }
 ]
 
 let pager = new Pager({ db, rows, screen })
