@@ -65,7 +65,7 @@ class Entry {
       })
       this.win.append(editor)
       editor.setValue(JSON.stringify(this.data, null, '  '))
-      editor.readEditor(data => {
+      editor.readEditor((err, data) => {
         this.db.set(this.id, JSON.parse(data), (err, id) => {
           if (err) {
             throw (err)
