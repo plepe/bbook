@@ -23,19 +23,28 @@ class Entry {
   }
 
   updateWindow () {
-    this.win.setValue(JSON.stringify(this.data, null, '  '))
+    this.win.clearItems()
+
+    this.options.rows.forEach(row => {
+      this.win.addItem(row.title + ': ' + (this.data[row.id] || ''))
+    })
+
     this.screen.render()
   }
 
   show () {
-    this.win = blessed.Textarea({
+    this.win = blessed.List({
       top: 5,
       left: 5,
-      width: 20,
+      width: 60,
       height: 10,
       style: {
         bg: 'red'
-      }
+      },
+      scrollable: true,
+      keys: true,
+      mouse: true,
+      scrollbar: true
     })
 
     this.screen.append(this.win)
