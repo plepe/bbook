@@ -4,6 +4,7 @@ ee.allOff = require('event-emitter/all-off')
 
 const Database = require('./Database')
 const Pager = require('./Pager')
+global.debug = require('./debug')
 
 const screen = blessed.screen({
   smartCSR: true,
