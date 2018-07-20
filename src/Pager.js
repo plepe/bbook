@@ -21,6 +21,7 @@ class Pager {
       keys: true,
       mouse: true,
       scrollbar: true,
+      align: 'left',
       style: {
         border: {
           fg: 'red'
