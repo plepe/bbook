@@ -12,6 +12,31 @@ class Pager {
   }
 
   show () {
+    let line = blessed.Line({
+      top: 1,
+      left: 0,
+      right: 0,
+      orientation: 'horizontal'
+    })
+    this.screen.append(line)
+
+    line = blessed.Line({
+      bottom: 1,
+      left: 0,
+      right: 0,
+      orientation: 'horizontal'
+    })
+    this.screen.append(line)
+
+    let help = blessed.box({
+      top: 0,
+      left: 0,
+      right: 0,
+      height: 1,
+      content: 'q:quit, a:add, r:remove'
+    })
+    this.screen.append(help)
+
     this.table = blessed.listtable({
       top: 2,
       left: 0,
@@ -48,7 +73,7 @@ class Pager {
       this.showEntry(null)
     })
     this.table.on('select', (data) => {
-      let index = data.index - 2 // why -2?
+      let index = this.table.selected - 1
       let id = this.database[index].id
 
       this.showEntry(id)

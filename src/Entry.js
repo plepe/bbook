@@ -75,6 +75,8 @@ class Entry {
   inputField (id) {
     let row = this.options.rows.find(row => row.id === id)
     let win = blessed.Box({
+      top: 'center',
+      left: 'center',
       height: 4,
       width: 60,
       border: {
@@ -117,18 +119,29 @@ class Entry {
   }
 
   show () {
+    let help = blessed.box({
+      top: 0,
+      left: 0,
+      right: 0,
+      height: 1,
+      content: 'q:back, enter:change value, e:edit externally'
+    })
+    this.screen.append(help)
+
     this.win = blessed.List({
-      top: 5,
-      left: 5,
-      width: 60,
-      height: 10,
-      style: {
-        bg: 'red'
-      },
+      top: 2,
+      left: 0,
+      right: 0,
+      bottom: 2,
       scrollable: true,
       keys: true,
       mouse: true,
-      scrollbar: true
+      scrollbar: true,
+      style: {
+          selected: {
+            bg: 'blue'
+          }
+      }
     })
 
     this.screen.append(this.win)
