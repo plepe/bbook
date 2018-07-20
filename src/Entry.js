@@ -51,7 +51,12 @@ class Entry {
     this.win.focus()
 
     this.win.key('e', () => {
-      this.win.readEditor(data => {
+      let editor = blessed.Textarea({
+        height: 0, width: 0
+      })
+      this.win.append(editor)
+      editor.setValue(JSON.stringify(this.data, null, '  '))
+      editor.readEditor(data => {
         this.db.set(this.id, JSON.parse(data), (err, id) => {
           if (err) {
             throw (err)
@@ -71,6 +76,7 @@ class Entry {
             this.updateWindow()
           })
         })
+        editor.destroy()
       })
     })
 
