@@ -48,6 +48,31 @@ class Entry {
     })
   }
 
+  inputField (id, external) {
+    let editor = blessed.Textbox({
+      height: 1, width: 60
+    })
+    this.win.append(editor)
+    editor.setValue(this.data[id])
+    this.screen.render()
+
+    let method = external ? editor.readEditor : editor.readInput
+
+    method.call(editor, (err, data) => {
+      let newData = {}
+      newData[id] = data
+      editor.destroy()
+
+      this.updateData(newData, (err) => {
+        if (err) {
+          throw(err)
+        }
+
+        this.updateWindow()
+      })
+    })
+  }
+
   show () {
     this.win = blessed.List({
       top: 5,
@@ -64,6 +89,15 @@ class Entry {
     })
 
     this.screen.append(this.win)
+
+    this.win.on('select', () => {
+      let id = this.options.rows[this.win.selected].id
+      this.inputField(id)
+    })
+    this.win.key([ 'e' ], () => {
+      let id = this.options.rows[this.win.selected].id
+      this.inputField(id, true)
+    })
 
     this.get(err => {
       if (err) {
