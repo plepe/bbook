@@ -32,6 +32,22 @@ class Entry {
     this.screen.render()
   }
 
+  updateData (data, callback) {
+    this.db.set(this.id, data, (err, id) => {
+      if (err) {
+        throw (err)
+      }
+
+      if (id) {
+        this.id = id
+      }
+
+      this.emit('update')
+
+      this.get(callback)
+    })
+  }
+
   show () {
     this.win = blessed.List({
       top: 5,
@@ -59,33 +75,26 @@ class Entry {
 
     this.win.focus()
 
-    this.win.key('e', () => {
+    this.win.key('S-e', () => {
       let editor = blessed.Textarea({
         height: 0, width: 0
       })
       this.win.append(editor)
       editor.setValue(JSON.stringify(this.data, null, '  '))
       editor.readEditor((err, data) => {
-        this.db.set(this.id, JSON.parse(data), (err, id) => {
-          if (err) {
-            throw (err)
-          }
+        if (err) {
+          throw(err)
+        }
 
-          if (id) {
-            this.id = id
-          }
-
-          this.emit('update')
-
-          this.get(err => {
-            if (err) {
-              throw (err)
-            }
-
-            this.updateWindow()
-          })
-        })
         editor.destroy()
+
+        this.updateData(JSON.parse(data), (err) => {
+          if (err) {
+            throw(err)
+          }
+
+          this.updateWindow()
+        })
       })
     })
 
