@@ -48,7 +48,31 @@ class Entry {
     })
   }
 
-  inputField (id, external) {
+  /**
+   * open in external editor
+   */
+  editField (id) {
+    let editor = blessed.Textbox({
+    })
+    this.win.append(editor)
+    editor.setValue(this.data[id])
+
+    editor.readEditor((err, data) => {
+      let newData = {}
+      newData[id] = data
+      editor.destroy()
+
+      this.updateData(newData, (err) => {
+        if (err) {
+          throw(err)
+        }
+
+        this.updateWindow()
+      })
+    })
+  }
+
+  inputField (id) {
     let row = this.options.rows.find(row => row.id === id)
     let win = blessed.Box({
       height: 4,
@@ -67,9 +91,7 @@ class Entry {
     editor.setValue(this.data[id])
     this.screen.render()
 
-    let method = external ? editor.readEditor : editor.readInput
-
-    method.call(editor, (err, data) => {
+    editor.readInput((err, data) => {
       let newData = {}
       newData[id] = data
       editor.destroy()
@@ -108,7 +130,7 @@ class Entry {
     })
     this.win.key([ 'e' ], () => {
       let id = this.options.rows[this.win.selected].id
-      this.inputField(id, true)
+      this.editField(id)
     })
 
     this.get(err => {
