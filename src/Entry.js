@@ -49,10 +49,21 @@ class Entry {
   }
 
   inputField (id, external) {
-    let editor = blessed.Textbox({
-      height: 1, width: 60
+    let row = this.options.rows.find(row => row.id === id)
+    let win = blessed.Box({
+      height: 4,
+      width: 60,
+      border: {
+        type: 'line'
+      },
+      content: row.title + ':'
     })
-    this.win.append(editor)
+    this.win.append(win)
+
+    let editor = blessed.Textbox({
+      top: 1
+    })
+    win.append(editor)
     editor.setValue(this.data[id])
     this.screen.render()
 
@@ -62,6 +73,7 @@ class Entry {
       let newData = {}
       newData[id] = data
       editor.destroy()
+      win.destroy()
 
       this.updateData(newData, (err) => {
         if (err) {
