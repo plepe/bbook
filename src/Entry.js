@@ -85,15 +85,22 @@ class Entry {
     this.win.append(win)
 
     let editor = blessed.Textbox({
-      top: 1
+      top: 1,
+      inputOnFocus: true
     })
     win.append(editor)
     editor.setValue(this.data[id])
-    this.screen.render()
+    editor.focus()
 
-    editor.readInput((err, data) => {
+    editor.on('cancel', () => {
+      editor.destroy()
+      win.destroy()
+      this.screen.render()
+    })
+
+    editor.on('submit', () => {
       let newData = {}
-      newData[id] = data
+      newData[id] = editor.getValue()
       editor.destroy()
       win.destroy()
 
@@ -105,6 +112,8 @@ class Entry {
         this.updateWindow()
       })
     })
+
+    this.screen.render()
   }
 
   show () {
