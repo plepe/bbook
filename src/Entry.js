@@ -159,14 +159,6 @@ class Entry {
       this.editField(id)
     })
 
-    this.get(err => {
-      if (err) {
-        throw (err)
-      }
-
-      this.updateWindow()
-    })
-
     this.win.focus()
 
     this.win.key('S-e', () => {
@@ -198,6 +190,22 @@ class Entry {
 
       this.emit('close')
     })
+
+    if (this.id === null) {
+      this.data = {}
+      let id = this.options.rows[0].id
+      this.inputField(id)
+      return
+    }
+
+    this.get(err => {
+      if (err) {
+        throw (err)
+      }
+
+      this.updateWindow()
+    })
+
   }
 }
 
