@@ -23,11 +23,15 @@ class Entry {
   }
 
   updateWindow () {
+    let currentIndex = this.win.selected
+
     this.win.clearItems()
 
     this.options.rows.forEach(row => {
       this.win.addItem(row.title + ': ' + (this.data[row.id] || ''))
     })
+
+    this.win.select(currentIndex)
 
     this.screen.render()
   }
