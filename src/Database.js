@@ -49,6 +49,23 @@ class Database {
       })
     }
 
+    if (str !== '') {
+      return transaction.all(
+        'select id from nbook where value like ? group by id', '%' + str + '%',
+        (err, result) => {
+          if (err) {
+            return callback(err)
+          }
+
+          async.map(
+            result,
+            (entry, callback) => this.get(entry.id, callback, transaction),
+            (err, result) => callback(err, result)
+          )
+        }
+      )
+    }
+
     let result = {}
 
     transaction.each('select * from nbook', (err, r) => {

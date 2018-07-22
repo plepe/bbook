@@ -99,6 +99,20 @@ describe('Database', function () {
     })
   })
 
+  it('search foo', function (done) {
+    db.search('foo', (err, result) => {
+      assert.equal(result.length, 2)
+      done(err)
+    })
+  })
+
+  it('search xxx', function (done) {
+    db.search('xxx', (err, result) => {
+      assert.equal(result.length, 0)
+      done(err)
+    })
+  })
+
   it('update alice', function (done) {
     db.set(entryAlice, { email: null, phone: '01234567' },
       (err) => {
