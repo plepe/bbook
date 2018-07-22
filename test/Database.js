@@ -51,7 +51,7 @@ describe('Database', function () {
   })
 
   it('insert parallel', function (done) {
-    async.series([
+    async.parallel([
       function (done) {
         db.insert({ name: 'Foo Bar', email: 'foobar@example.com' },
           (err, result) => {
@@ -73,6 +73,7 @@ describe('Database', function () {
         )
       },
     ], function (err) {
+      assert.equal(entryFooBar === entryBarFoo, false, 'Both entries got same id')
       done(err)
     })
   })

@@ -4,6 +4,7 @@ const sqlite3 = require('sqlite3')
 class Database {
   constructor (filename) {
     this.db = new sqlite3.Database(filename)
+    this.highestId = null
   }
 
   init (callback) {
@@ -90,6 +91,12 @@ class Database {
       } else {
         id = result[0].id + 1
       }
+
+      if (id <= this.highestId) {
+        id = this.highestId + 1
+      }
+
+      this.highestId = id
 
       this.set(id, data, callback)
     })
