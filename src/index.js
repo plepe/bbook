@@ -8,6 +8,7 @@ const cli = require('./cli')
 const addEmail = require('./addEmail')
 const fileExport = require('./fileExport')
 const fileImport = require('./fileImport')
+const muttQuery = require('./muttQuery')
 global.debug = require('./debug')
 
 let args = cli()
@@ -61,6 +62,22 @@ db.init(function () {
         }
       )
     })
+  } else if (args.mutt_query) {
+    muttQuery(
+      args.mutt_query[0],
+      {
+        db
+      },
+      (err, result) => {
+        debug(result)
+        if (err) {
+          process.stdout.write(err + '\r\n')
+        } else {
+          process.stdout.write('\r\n')
+          process.stdout.write(result)
+        }
+      }
+    )
   } else {
     setupGui()
   }

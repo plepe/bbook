@@ -25,6 +25,14 @@ module.exports = function () {
   )
 
   parser.addArgument(
+    [ '--mutt-query' ],
+    {
+      help: 'Query database for a list of addresses as expected by mutt',
+      nargs: 1
+    }
+  )
+
+  parser.addArgument(
     [ '-x', '--export' ],
     {
       help: 'export database in the specified format to stdout. Possible values: "json"',
