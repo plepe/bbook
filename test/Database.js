@@ -91,9 +91,7 @@ describe('Database', function () {
         {
           id: entryFooBar,
           name: 'Foo Bar',
-          email: 'foobar@example.com',
-          phone: null,
-          country: null
+          email: 'foobar@example.com'
         }
       )
       done(err)
@@ -113,9 +111,7 @@ describe('Database', function () {
             {
               id: entryAlice,
               name: 'Alice',
-              email: null,
-              phone: '01234567',
-              country: null
+              phone: '01234567'
             }
           )
           done(err)

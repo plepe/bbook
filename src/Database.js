@@ -1,3 +1,4 @@
+const async = require('async')
 const sqlite3 = require('sqlite3')
 
 class Database {
@@ -10,11 +11,10 @@ class Database {
       if (err) {
         return this.db.all(
           `create table nbook (
-             id integer primary key,
-             name text,
-             email text,
-             phone text,
-             country text
+             id integer not null,
+             key varchar(30) not null,
+             value text,
+             primary key (id, key)
            )`, callback)
       }
 
@@ -23,65 +23,76 @@ class Database {
   }
 
   search (str, callback) {
-    this.db.all('select * from nbook', (err, result) => {
-      callback(err, result)
-    })
-  }
+    let result = {}
 
-  get (id, callback) {
-    this.db.all('select * from nbook where id = ?', [ id ], (err, result) => {
+    this.db.each('select * from nbook', (err, r) => {
       if (err) {
         return callback(err)
       }
 
-      callback(null, result.length ? result[0] : null)
+      if (!(r.id in result)) {
+        result[r.id] = { id: r.id }
+      }
+
+      result[r.id][r.key] = r.value
+    }, (err) => {
+      callback(err, Object.values(result))
+    })
+  }
+
+  get (id, callback) {
+    let result = null
+
+    this.db.each('select * from nbook where id = ?', [ id ], (err, r) => {
+      if (err) {
+        return callback(err)
+      }
+
+      if (result === null) {
+        result = { id: r.id }
+      }
+
+      result[r.key] = r.value
+    }, (err) => {
+      callback(err, result)
     })
   }
 
   set (id, data, callback) {
     if (!id) {
-      this.insert(data, callback)
+      return this.insert(data, callback)
     }
 
-    let cols = []
-    let param = []
-
-    // TODO: check validity of row name
-    for (var k in data) {
-      cols.push(k + ' = ?')
-      param.push(data[k])
-    }
-    param.push(id)
-
-    this.db.run('update nbook set ' + cols.join(', ') + ' where id = ?', param, (err, result) => {
-      callback(err, null)
-    })
+    async.eachOf(data,
+      (value, key, callback) => {
+        if (value === null) {
+          this.db.run('delete from nbook where id=? and key=?', [ id, key ], callback)
+        } else {
+          this.db.run('insert or replace into nbook(id, key, value) values (?, ?, ?)', [ id, key, value ], callback)
+        }
+      },
+      (err) => {
+        callback(err, id)
+      }
+    )
   }
 
   insert (data, callback) {
-    let cols = []
-    let param = []
-    let values = []
+    let id = null
 
-    // TODO: check validity of row name
-    for (var k in data) {
-      cols.push(k)
-      values.push('?')
-      param.push(data[k])
-    }
-
-    let that = this // hack, so we can get the lastId of the query
-    this.db.run(
-      'insert into nbook (' + cols.join(', ') + ') values (' + values.join(', ') + ')',
-      param,
-      function (err) {
-        if (err) {
-          return callback(err)
-        }
-
-        callback(null, this.lastID)
+    this.db.all('select max(id) as id from nbook', (err, result) => {
+      if (err) {
+        return callback(err)
       }
-    )
+
+      if (result[0].id === null) {
+        id = 1
+      } else {
+        id = result[0].id + 1
+      }
+
+      this.set(id, data, callback)
+    })
   }
 
   remove (id, callback) {
