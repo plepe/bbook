@@ -8,7 +8,7 @@ class Database {
   init (callback) {
     this.db.run('select 1 from nbook', (err, result) => {
       if (err) {
-        this.db.all(
+        return this.db.all(
           `create table nbook (
              id integer primary key,
              name text,
