@@ -62,13 +62,17 @@ class Entry {
     editor.setValue(this.data[id])
 
     editor.readEditor((err, data) => {
+      if (err) {
+        throw (err)
+      }
+
       let newData = {}
       newData[id] = data
       editor.destroy()
 
       this.updateData(newData, (err) => {
         if (err) {
-          throw(err)
+          throw (err)
         }
 
         this.updateWindow()
@@ -112,7 +116,7 @@ class Entry {
 
       this.updateData(newData, (err) => {
         if (err) {
-          throw(err)
+          throw (err)
         }
 
         this.updateWindow()
@@ -142,9 +146,9 @@ class Entry {
       mouse: true,
       scrollbar: true,
       style: {
-          selected: {
-            bg: 'blue'
-          }
+        selected: {
+          bg: 'blue'
+        }
       }
     })
 
@@ -169,14 +173,14 @@ class Entry {
       editor.setValue(JSON.stringify(this.data, null, '  '))
       editor.readEditor((err, data) => {
         if (err) {
-          throw(err)
+          throw (err)
         }
 
         editor.destroy()
 
         this.updateData(JSON.parse(data), (err) => {
           if (err) {
-            throw(err)
+            throw (err)
           }
 
           this.updateWindow()
@@ -205,7 +209,6 @@ class Entry {
 
       this.updateWindow()
     })
-
   }
 }
 

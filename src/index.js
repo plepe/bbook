@@ -5,7 +5,7 @@ ee.allOff = require('event-emitter/all-off')
 const Database = require('./Database')
 const Pager = require('./Pager')
 const cli = require('./cli')
-const add_email = require('./add_email')
+const addEmail = require('./addEmail')
 global.debug = require('./debug')
 
 let args = cli()
@@ -20,9 +20,8 @@ let rows = [
 ]
 
 if (args.add_email) {
-  add_email(db, rows)
-}
-else {
+  addEmail(db, rows)
+} else {
   setupGui()
 }
 
@@ -41,4 +40,3 @@ function setupGui () {
   let pager = new Pager({ db, rows, screen })
   pager.show()
 }
-

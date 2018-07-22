@@ -1,13 +1,12 @@
 const ttys = require('ttys')
 const readline = require('readline')
 
-function add_email (db, rows) {
+function addEmail (db, rows) {
   let name
   let email
 
   let stdin = process.stdin
   stdin.setEncoding('utf8')
-  let chunks = []
 
   stdin.on('data', function (chunk) {
     let lines = chunk.split('\n')
@@ -51,4 +50,4 @@ function add_email (db, rows) {
   })
 }
 
-module.exports = add_email
+module.exports = addEmail
