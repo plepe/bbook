@@ -16,7 +16,7 @@ const screen = blessed.screen({
 
 screen.title = 'nbook'
 
-let db = new Database('nbook.db')
+let db = new Database(args.database)
 
 let rows = [
   { id: 'name', title: 'Name', pager: true },
