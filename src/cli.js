@@ -27,7 +27,7 @@ module.exports = function () {
   parser.addArgument(
     [ '-x', '--export' ],
     {
-      help: 'export database in the specified format. Possible values: "json"',
+      help: 'export database in the specified format to stdout. Possible values: "json"',
       nargs: 1
     }
   )
@@ -35,7 +35,7 @@ module.exports = function () {
   parser.addArgument(
     [ '-i', '--import' ],
     {
-      help: 'import database in the specified format. Possible values: "json"',
+      help: 'import database from stdin in the specified format. Possible values: "json"',
       nargs: 1
     }
   )
