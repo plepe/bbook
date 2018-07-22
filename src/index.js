@@ -9,13 +9,6 @@ global.debug = require('./debug')
 
 let args = cli()
 
-const screen = blessed.screen({
-  smartCSR: true,
-  fullUnicode: true
-})
-
-screen.title = 'nbook'
-
 let db = new Database(args.database)
 
 let rows = [
@@ -25,9 +18,20 @@ let rows = [
   { id: 'country', title: 'Country', pager: false }
 ]
 
-let pager = new Pager({ db, rows, screen })
-pager.show()
+function setupGui () {
+  const screen = blessed.screen({
+    smartCSR: true,
+    fullUnicode: true
+  })
 
-screen.key('C-c', function () {
-  screen.destroy()
-})
+  screen.title = 'nbook'
+
+  screen.key('C-c', function () {
+    screen.destroy()
+  })
+
+  let pager = new Pager({ db, rows, screen })
+  pager.show()
+}
+
+setupGui()
