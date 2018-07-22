@@ -32,14 +32,14 @@ class Pager {
     })
     this.screen.append(line)
 
-    let help = blessed.box({
+    this.shortHelp = blessed.box({
       top: 0,
       left: 0,
       right: 0,
       height: 1,
       content: 'q:quit, a:add, r:remove'
     })
-    this.screen.append(help)
+    this.screen.append(this.shortHelp)
 
     this.table = blessed.listtable({
       top: 2,
@@ -71,7 +71,7 @@ class Pager {
     this.updateDisplay()
 
     this.table.key([ 'escape', 'q' ], () => {
-      this.screen.destroy()
+      this.close()
     })
     this.table.key([ 'insert', 'a' ], () => {
       this.showEntry(null)
@@ -214,8 +214,15 @@ class Pager {
       )
     }
   )
-}
+  }
 
+  close () {
+    this.table.destroy()
+    this.shortHelp.destroy()
+    this.screen.render()
+
+    this.emit('close')
+  }
 }
 
 ee(Pager.prototype)

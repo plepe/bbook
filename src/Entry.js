@@ -104,14 +104,14 @@ class Entry {
   }
 
   show () {
-    let help = blessed.box({
+    this.shortHelp = blessed.box({
       top: 0,
       left: 0,
       right: 0,
       height: 1,
       content: 'q:back, enter:change value, e:edit externally'
     })
-    this.screen.append(help)
+    this.screen.append(this.shortHelp)
 
     this.win = blessed.List({
       top: 2,
@@ -166,10 +166,7 @@ class Entry {
     })
 
     this.win.key([ 'escape', 'q' ], () => {
-      this.win.destroy()
-      this.screen.render()
-
-      this.emit('close')
+      this.close()
     })
 
     if (this.id === null) {
@@ -186,6 +183,14 @@ class Entry {
 
       this.updateWindow()
     })
+  }
+
+  close () {
+    this.win.destroy()
+    this.shortHelp.destroy()
+    this.screen.render()
+
+    this.emit('close')
   }
 }
 

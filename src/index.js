@@ -80,4 +80,7 @@ function setupGui () {
 
   let pager = new Pager({ db, rows, screen })
   pager.show()
+  pager.on('close', () => {
+    screen.destroy()
+  })
 }
