@@ -1,7 +1,11 @@
 const blessed = require('neo-blessed')
 const ee = require('event-emitter')
+const fs = require('fs')
+const async = require('async')
 
 const Entry = require('./Entry')
+const fileExport = require('./fileExport')
+const inputTextbox = require('./inputTextbox')
 
 class Pager {
   constructor (options) {
@@ -90,6 +94,7 @@ class Pager {
         this.updateDisplay()
       })
     })
+    this.table.key([ 'x' ], () => this.exportToFile())
   }
 
   showEntry (id) {
@@ -132,6 +137,51 @@ class Pager {
       this.screen.render()
     })
   }
+
+  exportToFile () {
+    let filename
+    let content
+
+    async.parallel([
+      (callback) => {
+        inputTextbox('Filename', '', this.screen,
+          (err, result) => {
+            filename = result
+            callback(err)
+          }
+        )
+      },
+      (callback) => {
+        fileExport(
+          {
+            db: this.db,
+            type: 'json'
+          },
+          (err, result) => {
+            content = result
+            callback(err)
+          }
+        )
+      }
+    ], (err) => {
+      if (err) {
+        throw(err)
+      }
+
+      fs.writeFile(filename, content, { encoding: 'utf8' },
+        (err) => {
+          if (err) {
+            throw(err)
+          }
+
+          // TODO: notify user about succesful write
+          this.screen.render()
+        }
+      )
+    }
+  )
+}
+
 }
 
 ee(Pager.prototype)
