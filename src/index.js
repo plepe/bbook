@@ -19,11 +19,13 @@ let rows = [
   { id: 'country', title: 'Country', pager: false }
 ]
 
-if (args.add_email) {
-  addEmail(db, rows)
-} else {
-  setupGui()
-}
+db.init(function () {
+  if (args.add_email) {
+    addEmail(db, rows)
+  } else {
+    setupGui()
+  }
+})
 
 function setupGui () {
   const screen = blessed.screen({

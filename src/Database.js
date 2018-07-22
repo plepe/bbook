@@ -6,53 +6,31 @@ class Database {
   }
 
   init (callback) {
-    this.db.all(
-      `create table nbook (
-         id integer primary key,
-         name text,
-         email text,
-         phone text,
-         country text
-       )`, callback)
+    this.db.run('select 1 from nbook', (err, result) => {
+      if (err) {
+        this.db.all(
+          `create table nbook (
+             id integer primary key,
+             name text,
+             email text,
+             phone text,
+             country text
+           )`, callback)
+      }
+
+      callback()
+    })
   }
 
   search (str, callback) {
     this.db.all('select * from nbook', (err, result) => {
-      if (err) {
-        if (err.errno === 1) {
-          this.init((err) => {
-            if (err) {
-              return callback(err)
-            }
-
-            this.search(str, callback)
-          })
-
-          return
-        }
-
-        return callback(err)
-      }
-
-      callback(null, result)
+      callback(err, result)
     })
   }
 
   get (id, callback) {
     this.db.all('select * from nbook where id = ?', [ id ], (err, result) => {
       if (err) {
-        if (err.errno === 1) {
-          this.init((err) => {
-            if (err) {
-              return callback(err)
-            }
-
-            this.get(id, callback)
-          })
-
-          return
-        }
-
         return callback(err)
       }
 
@@ -76,23 +54,7 @@ class Database {
     param.push(id)
 
     this.db.run('update nbook set ' + cols.join(', ') + ' where id = ?', param, (err, result) => {
-      if (err) {
-        if (err.errno === 1) {
-          this.init((err) => {
-            if (err) {
-              return callback(err)
-            }
-
-            this.set(id, data, callback)
-          })
-
-          return
-        }
-
-        return callback(err)
-      }
-
-      callback(null)
+      callback(err, null)
     })
   }
 
@@ -114,18 +76,6 @@ class Database {
       param,
       function (err) {
         if (err) {
-          if (err.errno === 1) {
-            that.init((err) => {
-              if (err) {
-                return callback(err)
-              }
-
-              that.insert(data, callback)
-            })
-
-            return
-          }
-
           return callback(err)
         }
 
