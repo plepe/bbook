@@ -5,6 +5,7 @@ ee.allOff = require('event-emitter/all-off')
 const Database = require('./Database')
 const Pager = require('./Pager')
 const cli = require('./cli')
+const add_email = require('./add_email')
 global.debug = require('./debug')
 
 let args = cli()
@@ -17,6 +18,13 @@ let rows = [
   { id: 'phone', title: 'Phone', pager: true },
   { id: 'country', title: 'Country', pager: false }
 ]
+
+if (args.add_email) {
+  add_email(db, rows)
+}
+else {
+  setupGui()
+}
 
 function setupGui () {
   const screen = blessed.screen({
@@ -34,4 +42,3 @@ function setupGui () {
   pager.show()
 }
 
-setupGui()

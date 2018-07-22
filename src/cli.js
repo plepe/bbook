@@ -16,5 +16,13 @@ module.exports = function () {
     }
   )
 
+  parser.addArgument(
+    [ '--add-email' ],
+    {
+      help: 'Read an email (header) from stdin and parse the From address. Creates new entry from this address',
+      nargs: 0
+    }
+  )
+
   return parser.parseArgs()
 }
