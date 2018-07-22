@@ -30,10 +30,28 @@ class Database {
     return this.db.beginTransaction(callback)
   }
 
-  search (str, callback) {
+  search (str, callback, transaction) {
+    if (!transaction) {
+      return this.beginTransaction((err, t) => {
+        if (err) {
+          return callback(err)
+        }
+
+        this.search(str, (err, result) => {
+          if (err) {
+            return callback(err)
+          }
+
+          t.commit((err) => {
+            callback(err, result)
+          })
+        }, t)
+      })
+    }
+
     let result = {}
 
-    this.db.each('select * from nbook', (err, r) => {
+    transaction.each('select * from nbook', (err, r) => {
       if (err) {
         return callback(err)
       }
@@ -48,10 +66,28 @@ class Database {
     })
   }
 
-  get (id, callback) {
+  get (id, callback, transaction) {
+    if (!transaction) {
+      return this.beginTransaction((err, t) => {
+        if (err) {
+          return callback(err)
+        }
+
+        this.get(id, (err, result) => {
+          if (err) {
+            return callback(err)
+          }
+
+          t.commit((err) => {
+            callback(err, result)
+          })
+        }, t)
+      })
+    }
+
     let result = null
 
-    this.db.each('select * from nbook where id = ?', [ id ], (err, r) => {
+    transaction.each('select * from nbook where id = ?', [ id ], (err, r) => {
       if (err) {
         return callback(err)
       }
