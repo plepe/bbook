@@ -32,5 +32,13 @@ module.exports = function () {
     }
   )
 
+  parser.addArgument(
+    [ '-i', '--import' ],
+    {
+      help: 'import database in the specified format. Possible values: "json"',
+      nargs: 1
+    }
+  )
+
   return parser.parseArgs()
 }

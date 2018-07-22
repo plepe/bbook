@@ -7,6 +7,7 @@ const Pager = require('./Pager')
 const cli = require('./cli')
 const addEmail = require('./addEmail')
 const fileExport = require('./fileExport')
+const fileImport = require('./fileImport')
 global.debug = require('./debug')
 
 let args = cli()
@@ -35,6 +36,31 @@ db.init(function () {
 
         process.stdout.write(result)
       })
+  } else if (args.import) {
+    let stdin = process.stdin
+    let chunks = []
+    stdin.setEncoding('utf8')
+
+    stdin.on('data', function (chunk) {
+      chunks.push(chunk)
+    })
+    stdin.on('end', function () {
+      chunks = chunks.join('')
+
+      fileImport(
+        chunks,
+        {
+          db,
+          type: args.import
+        }, (err, result) => {
+          if (err) {
+            throw(err)
+          }
+
+          process.exit(0)
+        }
+      )
+    })
   } else {
     setupGui()
   }
