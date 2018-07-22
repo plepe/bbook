@@ -41,14 +41,22 @@ let types = {
 
 function fileImport (data, options, callback) {
   let importedData = types[options.type](data)
+  options.db.beginTransaction((err, transaction) => {
+    async.each(importedData,
+      (entry, callback) => {
+        options.db.insert(entry, callback, transaction)
+      },
+      (err) => {
+        if (err) {
+          return callback(err)
+        }
 
-  async.each(importedData,
-    (entry, callback) => {
-      options.db.insert(entry, callback)
-      debug(entry)
-    },
-    (err) => callback()
-  )
+        transaction.commit((err) => {
+          callback(err)
+        })
+      }
+    )
+  })
 }
 
 module.exports = fileImport
