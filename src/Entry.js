@@ -1,6 +1,8 @@
 const blessed = require('neo-blessed')
 const ee = require('event-emitter')
 
+const inputTextbox = require('./inputTextbox')
+
 class Entry {
   constructor (id, options) {
     this.id = id
@@ -82,48 +84,23 @@ class Entry {
 
   inputField (id) {
     let row = this.options.rows.find(row => row.id === id)
-    let win = blessed.Box({
-      top: 'center',
-      left: 'center',
-      height: 4,
-      width: 60,
-      border: {
-        type: 'line'
-      },
-      content: row.title + ':'
-    })
-    this.win.append(win)
 
-    let editor = blessed.Textbox({
-      top: 1,
-      inputOnFocus: true
-    })
-    win.append(editor)
-    editor.setValue(this.data[id])
-    editor.focus()
+    inputTextbox(row.title, this.data[id], this.screen,
+      (err, result) => {
+        if (result !== null) {
+          let newData = {}
+          newData[id] = result === '' ? null : result
 
-    editor.on('cancel', () => {
-      editor.destroy()
-      win.destroy()
-      this.screen.render()
-    })
+          this.updateData(newData, (err) => {
+            if (err) {
+              throw (err)
+            }
 
-    editor.on('submit', () => {
-      let newData = {}
-      newData[id] = editor.getValue()
-      editor.destroy()
-      win.destroy()
-
-      this.updateData(newData, (err) => {
-        if (err) {
-          throw (err)
+            this.updateWindow()
+          })
         }
-
-        this.updateWindow()
-      })
-    })
-
-    this.screen.render()
+      }
+    )
   }
 
   show () {
