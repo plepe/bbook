@@ -8,6 +8,34 @@ let types = {
     })
 
     return data
+  },
+  abook: function typeAbook (data) {
+    let result = []
+    let current = null
+
+    data.split(/\r?\n/).forEach(row => {
+      let m1 = row.match(/^\[(.*)\]$/)
+      let m2 = row.match(/^([\w\d]+)=(.*)$/)
+
+      if (m1) {
+        if (m1[1] !== 'format') {
+          if (current !== null) {
+            result.push(current)
+          }
+          current = {}
+        }
+      } else if (m2) {
+        if (current !== null) {
+          current[m2[1]] = m2[2]
+        }
+      }
+    })
+
+    if (current !== null) {
+      result.push(current)
+    }
+
+    return result
   }
 }
 

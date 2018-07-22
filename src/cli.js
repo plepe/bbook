@@ -35,7 +35,7 @@ module.exports = function () {
   parser.addArgument(
     [ '-i', '--import' ],
     {
-      help: 'import database from stdin in the specified format. Possible values: "json"',
+      help: 'import database from stdin in the specified format. Possible values: "json", "abook"',
       nargs: 1
     }
   )
