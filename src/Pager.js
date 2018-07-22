@@ -76,6 +76,40 @@ class Pager {
     this.table.key([ 'insert', 'a' ], () => {
       this.showEntry(null)
     })
+    this.table.key([ 'pagedown' ], () => {
+      let height = this.table.height - 1 // (1 for the header)
+      let toLast = height - this.table.childOffset - 1
+
+      if (toLast === 0) {
+        this.table.select(this.table.selected + height)
+      } else {
+        this.table.select(this.table.selected + toLast)
+      }
+
+      this.screen.render()
+    })
+    this.table.key([ 'pageup' ], () => {
+      let height = this.table.height - 1 // (1 for the header)
+      let toFirst = this.table.childOffset
+
+      if (this.table.selected <= 1) {
+        // already at first
+      } else if (toFirst === 0) {
+        this.table.select(this.table.selected - height)
+      } else {
+        this.table.select(this.table.selected - toFirst)
+      }
+
+      this.screen.render()
+    })
+    this.table.key([ 'home' ], () => {
+      this.table.select(1)
+      this.screen.render()
+    })
+    this.table.key([ 'end' ], () => {
+      this.table.select(this.table.items.length - 1)
+      this.screen.render()
+    })
     this.table.on('select', (data) => {
       let index = this.table.selected - 1
       let id = this.database[index].id
