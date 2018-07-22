@@ -13,10 +13,16 @@ function add_email (db, rows) {
     let lines = chunk.split('\n')
 
     lines.forEach(line => {
-      let m = line.match(/^From:(.*)<(.*)>/)
+      let m = line.match(/^From:(.*)<(.*)>/i)
       if (m) {
         name = m[1].trim()
         email = m[2].trim()
+      }
+
+      m = line.match(/^From:\s*([a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*)$/i)
+      if (m) {
+        name = ''
+        email = m[1]
       }
     })
   })
