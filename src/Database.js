@@ -1,9 +1,12 @@
 const async = require('async')
 const sqlite3 = require('sqlite3')
+const Sqlite3TransactionDatabase = require("sqlite3-transactions").TransactionDatabase
 
 class Database {
   constructor (filename) {
-    this.db = new sqlite3.Database(filename)
+    this.db = new Sqlite3TransactionDatabase(
+      new sqlite3.Database(filename, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE)
+    )
     this.highestId = null
   }
 
@@ -21,6 +24,10 @@ class Database {
 
       callback()
     })
+  }
+
+  beginTransaction (callback) {
+    return this.db.beginTransaction(callback)
   }
 
   search (str, callback) {
@@ -59,17 +66,35 @@ class Database {
     })
   }
 
-  set (id, data, callback) {
+  set (id, data, callback, transaction) {
+    if (!transaction) {
+      return this.beginTransaction((err, t) => {
+        if (err) {
+          return callback(err)
+        }
+
+        this.set(id, data, (err, result) => {
+          if (err) {
+            return callback(err)
+          }
+
+          t.commit((err) => {
+            callback(err, result)
+          })
+        }, t)
+      })
+    }
+
     if (!id) {
-      return this.insert(data, callback)
+      return this.insert(data, callback, transaction)
     }
 
     async.eachOf(data,
       (value, key, callback) => {
         if (value === null) {
-          this.db.run('delete from nbook where id=? and key=?', [ id, key ], callback)
+          transaction.run('delete from nbook where id=? and key=?', [ id, key ], callback)
         } else {
-          this.db.run('insert or replace into nbook(id, key, value) values (?, ?, ?)', [ id, key, value ], callback)
+          transaction.run('insert or replace into nbook(id, key, value) values (?, ?, ?)', [ id, key, value ], callback)
         }
       },
       (err) => {
@@ -78,10 +103,28 @@ class Database {
     )
   }
 
-  insert (data, callback) {
+  insert (data, callback, transaction) {
+    if (!transaction) {
+      return this.beginTransaction((err, t) => {
+        if (err) {
+          return callback(err)
+        }
+
+        this.insert(data, (err, result) => {
+          if (err) {
+            return callback(err)
+          }
+
+          t.commit((err) => {
+            callback(err, result)
+          })
+        }, t)
+      })
+    }
+
     let id = null
 
-    this.db.all('select max(id) as id from nbook', (err, result) => {
+    transaction.all('select max(id) as id from nbook', (err, result) => {
       if (err) {
         return callback(err)
       }
@@ -98,7 +141,7 @@ class Database {
 
       this.highestId = id
 
-      this.set(id, data, callback)
+      this.set(id, data, callback, transaction)
     })
   }
 
