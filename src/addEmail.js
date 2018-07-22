@@ -1,5 +1,6 @@
 const ttys = require('ttys')
 const readline = require('readline')
+const rfc2047 = require('rfc2047')
 
 function addEmail (db, rows) {
   let name
@@ -14,7 +15,7 @@ function addEmail (db, rows) {
     lines.forEach(line => {
       let m = line.match(/^From:(.*)<(.*)>/i)
       if (m) {
-        name = m[1].trim()
+        name = rfc2047.decode(m[1].trim())
         email = m[2].trim()
       }
 
