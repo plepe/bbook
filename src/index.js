@@ -6,6 +6,7 @@ const Database = require('./Database')
 const Pager = require('./Pager')
 const cli = require('./cli')
 const addEmail = require('./addEmail')
+const fileExport = require('./fileExport')
 global.debug = require('./debug')
 
 let args = cli()
@@ -22,6 +23,18 @@ let rows = [
 db.init(function () {
   if (args.add_email) {
     addEmail(db, rows)
+  } else if (args.export) {
+    fileExport(
+      {
+        db,
+        type: args.export
+      }, (err, result) => {
+        if (err) {
+          throw(err)
+        }
+
+        process.stdout.write(result)
+      })
   } else {
     setupGui()
   }
