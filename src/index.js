@@ -32,7 +32,7 @@ db.init(function () {
         type: args.export
       }, (err, result) => {
         if (err) {
-          throw(err)
+          throw (err)
         }
 
         process.stdout.write(result)
@@ -55,7 +55,7 @@ db.init(function () {
           type: args.import
         }, (err, result) => {
           if (err) {
-            throw(err)
+            throw (err)
           }
 
           process.exit(0)
@@ -69,7 +69,6 @@ db.init(function () {
         db
       },
       (err, result) => {
-        debug(result)
         if (err) {
           process.stdout.write(err + '\r\n')
         } else {

@@ -199,13 +199,13 @@ class Pager {
       }
     ], (err) => {
       if (err) {
-        throw(err)
+        throw (err)
       }
 
       fs.writeFile(filename, content, { encoding: 'utf8' },
         (err) => {
           if (err) {
-            throw(err)
+            throw (err)
           }
 
           // TODO: notify user about succesful write
@@ -213,7 +213,7 @@ class Pager {
         }
       )
     }
-  )
+    )
   }
 
   close () {

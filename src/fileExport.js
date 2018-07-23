@@ -14,7 +14,6 @@ function fileExport (options, callback) {
       callback(null, types[options.type](result))
     }
   )
-
 }
 
-module.exports = fileExport 
+module.exports = fileExport

@@ -24,7 +24,7 @@ class Entry {
     }
   }
 
-  updateWindow (options={}) {
+  updateWindow (options = {}) {
     let currentIndex = this.win.selected
     let done = {}
     this.fieldIndex = []
@@ -102,6 +102,10 @@ class Entry {
 
     inputTextbox(row.title || row.id, this.data[id], this.screen,
       (err, result) => {
+        if (err) {
+          return callback(err)
+        }
+
         if (result !== null) {
           let newData = {}
           newData[id] = result === '' ? null : result

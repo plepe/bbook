@@ -1,6 +1,6 @@
 const async = require('async')
 const sqlite3 = require('sqlite3')
-const Sqlite3TransactionDatabase = require("sqlite3-transactions").TransactionDatabase
+const Sqlite3TransactionDatabase = require('sqlite3-transactions').TransactionDatabase
 
 class Database {
   constructor (filename) {
