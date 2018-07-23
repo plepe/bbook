@@ -11,8 +11,7 @@ module.exports = function () {
   parser.addArgument(
     [ '-d', '--database' ],
     {
-      help: 'using the specified database file (if it does not exist, it will be created). Default: "bbook.db"',
-      defaultValue: 'bbook.db'
+      help: 'using the specified database file (if it does not exist, it will be created). Default: "~/bbook.db"'
     }
   )
 

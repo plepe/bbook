@@ -4,6 +4,10 @@ const Sqlite3TransactionDatabase = require('sqlite3-transactions').TransactionDa
 
 class Database {
   constructor (filename) {
+    if (!filename) {
+      filename = process.env.HOME + '/bbook.db'
+    }
+
     this.db = new Sqlite3TransactionDatabase(
       new sqlite3.Database(filename, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE)
     )
