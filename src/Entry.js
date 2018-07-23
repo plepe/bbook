@@ -24,7 +24,7 @@ class Entry {
     }
   }
 
-  updateWindow () {
+  updateWindow (options={}) {
     let currentIndex = this.win.selected
 
     this.win.clearItems()
@@ -32,6 +32,10 @@ class Entry {
     this.options.rows.forEach(row => {
       this.win.addItem(row.title + ': ' + (this.data[row.id] || ''))
     })
+
+    if (options.selectNext) {
+      currentIndex++
+    }
 
     this.win.select(currentIndex)
 
@@ -57,7 +61,7 @@ class Entry {
   /**
    * open in external editor
    */
-  editField (id) {
+  editField (id, callback) {
     let editor = blessed.Textbox({
     })
     this.win.append(editor)
@@ -77,12 +81,12 @@ class Entry {
           throw (err)
         }
 
-        this.updateWindow()
+        callback(null)
       })
     })
   }
 
-  inputField (id) {
+  inputField (id, callback) {
     let row = this.options.rows.find(row => row.id === id)
 
     inputTextbox(row.title, this.data[id], this.screen,
@@ -96,7 +100,7 @@ class Entry {
               throw (err)
             }
 
-            this.updateWindow()
+            callback(null)
           })
         }
       }
@@ -133,11 +137,15 @@ class Entry {
 
     this.win.on('select', () => {
       let id = this.options.rows[this.win.selected].id
-      this.inputField(id)
+      this.inputField(id, () => {
+        this.updateWindow({ selectNext: true })
+      })
     })
     this.win.key([ 'e' ], () => {
       let id = this.options.rows[this.win.selected].id
-      this.editField(id)
+      this.editField(id, () => {
+        this.updateWindow({ selectNext: true })
+      })
     })
 
     this.win.focus()
@@ -172,7 +180,9 @@ class Entry {
     if (this.id === null) {
       this.data = {}
       let id = this.options.rows[0].id
-      this.inputField(id)
+      this.inputField(id, () => {
+        this.updateWindow({ selectNext: true })
+      })
       return
     }
 
