@@ -2,6 +2,7 @@ const blessed = require('neo-blessed')
 const ee = require('event-emitter')
 const fs = require('fs')
 const async = require('async')
+const i18next = require('i18next')
 
 const Entry = require('./Entry')
 const fileExport = require('./fileExport')
@@ -37,7 +38,7 @@ class Pager {
       left: 0,
       right: 0,
       height: 1,
-      content: 'q:quit, a:add, r:remove'
+      content: 'q:' + i18next.t('quit') + ', a:' + i18next.t('add') + ', r:' + i18next.t('remove')
     })
     this.screen.append(this.shortHelp)
 
@@ -178,7 +179,7 @@ class Pager {
 
     async.parallel([
       (callback) => {
-        inputTextbox('Filename', '', this.screen,
+        inputTextbox(i18next.t('Filename'), '', this.screen,
           (err, result) => {
             filename = result
             callback(err)

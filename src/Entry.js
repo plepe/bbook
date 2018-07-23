@@ -1,5 +1,6 @@
 const blessed = require('neo-blessed')
 const ee = require('event-emitter')
+const i18next = require('i18next')
 
 const inputTextbox = require('./inputTextbox')
 
@@ -132,7 +133,7 @@ class Entry {
       left: 0,
       right: 0,
       height: 1,
-      content: 'q:back, enter:change value, e:edit externally'
+      content: 'q:' + i18next.t('back') + ', enter:' + i18next.t('change value') + ', e:' + i18next.t('edit externally')
     })
     this.screen.append(this.shortHelp)
 

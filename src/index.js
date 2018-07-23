@@ -1,6 +1,9 @@
 const blessed = require('neo-blessed')
 const ee = require('event-emitter')
 ee.allOff = require('event-emitter/all-off')
+const i18next = require('i18next')
+const i18nextBackend = require('i18next-node-fs-backend')
+const i18nextDetector = require('i18next-node-language-detector')
 const async = require('async')
 
 const Database = require('./Database')
@@ -26,6 +29,22 @@ let rows = [
 async.parallel([
   function (callback) {
     db.init(callback)
+  },
+  function (callback) {
+    i18next
+      .use(i18nextBackend)
+      .use(i18nextDetector)
+      .init({
+        fallbackLng: 'en',
+        whitelist: [ 'en', 'de' ],
+        ns: [ 'app' ],
+        defaultNS: 'app',
+        backend: {
+          loadPath: 'lang/{{lng}}/{{ns}}.json'
+        }
+      },
+      callback
+    )
   }
 ], function (err) {
   if (err) {
