@@ -11,10 +11,10 @@ class Database {
   }
 
   init (callback) {
-    this.db.run('select 1 from nbook', (err, result) => {
+    this.db.run('select 1 from bbook', (err, result) => {
       if (err) {
         return this.db.all(
-          `create table nbook (
+          `create table bbook (
              id integer not null,
              key varchar(30) not null,
              value text,
@@ -51,7 +51,7 @@ class Database {
 
     if (str !== '') {
       return transaction.all(
-        'select id from nbook where value like ? group by id', '%' + str + '%',
+        'select id from bbook where value like ? group by id', '%' + str + '%',
         (err, result) => {
           if (err) {
             return callback(err)
@@ -68,7 +68,7 @@ class Database {
 
     let result = {}
 
-    transaction.each('select * from nbook', (err, r) => {
+    transaction.each('select * from bbook', (err, r) => {
       if (err) {
         return callback(err)
       }
@@ -104,7 +104,7 @@ class Database {
 
     let result = null
 
-    transaction.each('select * from nbook where id = ?', [ id ], (err, r) => {
+    transaction.each('select * from bbook where id = ?', [ id ], (err, r) => {
       if (err) {
         return callback(err)
       }
@@ -145,9 +145,9 @@ class Database {
     async.eachOf(data,
       (value, key, callback) => {
         if (value === null) {
-          transaction.run('delete from nbook where id=? and key=?', [ id, key ], callback)
+          transaction.run('delete from bbook where id=? and key=?', [ id, key ], callback)
         } else {
-          transaction.run('insert or replace into nbook(id, key, value) values (?, ?, ?)', [ id, key, value ], callback)
+          transaction.run('insert or replace into bbook(id, key, value) values (?, ?, ?)', [ id, key, value ], callback)
         }
       },
       (err) => {
@@ -177,7 +177,7 @@ class Database {
 
     let id = null
 
-    transaction.all('select max(id) as id from nbook', (err, result) => {
+    transaction.all('select max(id) as id from bbook', (err, result) => {
       if (err) {
         return callback(err)
       }
@@ -199,7 +199,7 @@ class Database {
   }
 
   remove (id, callback) {
-    this.db.run('delete from nbook where id = ?', id, (err, result) => {
+    this.db.run('delete from bbook where id = ?', id, (err, result) => {
       if (err) {
         return callback(err)
       }

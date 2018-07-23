@@ -5,14 +5,14 @@ module.exports = function () {
   const parser = new ArgumentParser({
     version: packageJson.version,
     addHelp: true,
-    description: 'An addressbook written in nodejs using the blessed framework. A drop-in replacement for abook.'
+    description: 'An addressbook written in nodejs using the blessed (an ncurses replacement) framework. Similar to abook.'
   })
 
   parser.addArgument(
     [ '-d', '--database' ],
     {
-      help: 'using the specified database file (if it does not exist, it will be created). Default: "nbook.db"',
-      defaultValue: 'nbook.db'
+      help: 'using the specified database file (if it does not exist, it will be created). Default: "bbook.db"',
+      defaultValue: 'bbook.db'
     }
   )
 

@@ -1,10 +1,10 @@
 {
-  "name": "nbook",
+  "name": "bbook",
   "version": "0.1.0",
-  "description": "nbook - an addressbook written in nodejs with blessed. A drop-in replacement for abook",
+  "description": "bbook - an addressbook written in nodejs with blessed. A drop-in replacement for abook",
   "main": "src/index.js",
   "bin": {
-    "nbook": "bin/nbook"
+    "bbook": "bin/bbook"
   },
   "author": "Stephan Bösch-Plepelits <skunk@xover.mud.at>",
   "license": "GPL-3.0",
@@ -26,5 +26,9 @@
   "scripts": {
     "lint": "standard --fix src/*.js",
     "test": "mocha --bail"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/plepe/bbook"
   }
 }

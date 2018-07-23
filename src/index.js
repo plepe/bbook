@@ -88,7 +88,7 @@ function setupGui () {
     fullUnicode: true
   })
 
-  screen.title = 'nbook'
+  screen.title = 'bbook'
 
   screen.key('C-c', function () {
     screen.destroy()
