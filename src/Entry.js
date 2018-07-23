@@ -26,12 +26,23 @@ class Entry {
 
   updateWindow (options={}) {
     let currentIndex = this.win.selected
+    let done = {}
+    this.fieldIndex = []
 
     this.win.clearItems()
 
     this.options.rows.forEach(row => {
       this.win.addItem(row.title + ': ' + (this.data[row.id] || ''))
+      done[row.id] = true
+      this.fieldIndex.push(row)
     })
+
+    for (let k in this.data) {
+      if (k !== 'id' && !done[k]) {
+        this.win.addItem(k + ': ' + (this.data[k] || ''))
+        this.fieldIndex.push({ id: k })
+      }
+    }
 
     if (options.selectNext) {
       currentIndex++
@@ -87,9 +98,9 @@ class Entry {
   }
 
   inputField (id, callback) {
-    let row = this.options.rows.find(row => row.id === id)
+    let row = this.fieldIndex.find(row => row.id === id)
 
-    inputTextbox(row.title, this.data[id], this.screen,
+    inputTextbox(row.title || row.id, this.data[id], this.screen,
       (err, result) => {
         if (result !== null) {
           let newData = {}
@@ -108,7 +119,7 @@ class Entry {
   }
 
   currentField () {
-    return this.options.rows[this.win.selected]
+    return this.fieldIndex[this.win.selected]
   }
 
   show () {
