@@ -198,6 +198,8 @@ class Entry {
 
     if (this.id === null) {
       this.data = {}
+      this.updateWindow()
+
       let id = this.options.rows[0].id
       this.inputField(id, () => {
         this.updateWindow({ selectNext: true })
