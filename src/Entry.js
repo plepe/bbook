@@ -107,6 +107,10 @@ class Entry {
     )
   }
 
+  currentField () {
+    return this.options.rows[this.win.selected]
+  }
+
   show () {
     this.shortHelp = blessed.box({
       top: 0,
@@ -136,13 +140,13 @@ class Entry {
     this.screen.append(this.win)
 
     this.win.on('select', () => {
-      let id = this.options.rows[this.win.selected].id
+      let id = this.currentField().id
       this.inputField(id, () => {
         this.updateWindow({ selectNext: true })
       })
     })
     this.win.key([ 'e' ], () => {
-      let id = this.options.rows[this.win.selected].id
+      let id = this.currentField().id
       this.editField(id, () => {
         this.updateWindow({ selectNext: true })
       })
