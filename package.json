@@ -1,6 +1,6 @@
 {
   "name": "nbook",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "nbook - an addressbook written in nodejs with blessed. A drop-in replacement for abook",
   "main": "src/index.js",
   "bin": {
@@ -25,6 +25,6 @@
   },
   "scripts": {
     "lint": "standard --fix src/*.js",
-    "test": "mocha"
+    "test": "mocha --bail"
   }
 }
