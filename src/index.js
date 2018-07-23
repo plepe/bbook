@@ -1,6 +1,7 @@
 const blessed = require('neo-blessed')
 const ee = require('event-emitter')
 ee.allOff = require('event-emitter/all-off')
+const async = require('async')
 
 const Database = require('./Database')
 const Pager = require('./Pager')
@@ -22,7 +23,19 @@ let rows = [
   { id: 'country', title: 'Country', pager: false }
 ]
 
-db.init(function () {
+async.parallel([
+  function (callback) {
+    db.init(callback)
+  }
+], function (err) {
+  if (err) {
+    throw(err)
+  }
+
+  init2()
+})
+
+function init2 () {
   if (args.add_email) {
     addEmail(db, rows)
   } else if (args.export) {
@@ -80,7 +93,7 @@ db.init(function () {
   } else {
     setupGui()
   }
-})
+}
 
 function setupGui () {
   const screen = blessed.screen({
