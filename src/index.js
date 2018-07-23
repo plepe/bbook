@@ -9,18 +9,12 @@ const addEmail = require('./addEmail')
 const fileExport = require('./fileExport')
 const fileImport = require('./fileImport')
 const muttQuery = require('./muttQuery')
+const rows = require('./fields')
 global.debug = require('./debug')
 
 let args = cli()
 
 let db = new Database(args.database)
-
-let rows = [
-  { id: 'name', title: 'Name', pager: true },
-  { id: 'email', title: 'E-Mail address', pager: true },
-  { id: 'phone', title: 'Phone', pager: true },
-  { id: 'country', title: 'Country', pager: false }
-]
 
 db.init(function () {
   if (args.add_email) {
