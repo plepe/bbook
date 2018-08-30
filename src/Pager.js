@@ -13,6 +13,7 @@ class Pager {
 
     this.db = this.options.db
     this.screen = this.options.screen
+    this.searchResults = []
   }
 
   show () {
@@ -37,7 +38,7 @@ class Pager {
       left: 0,
       right: 0,
       height: 1,
-      content: 'q:quit, a:add, r:remove'
+      content: 'q:quit, a:add, r:remove, /:search, n:search next'
     })
     this.screen.append(this.shortHelp)
 
@@ -75,6 +76,30 @@ class Pager {
     })
     this.table.key([ 'insert', 'a' ], () => {
       this.showEntry(null)
+    })
+    this.table.key([ '/' ], () => {
+      inputTextbox('Search', '', this.screen, (err, result) => {
+        if (err) {
+          throw (err)
+        }
+
+        this.db.search(result, (err, result) => {
+          if (err) {
+            throw (err)
+          }
+
+          this.searchResults = result.map(entry => entry.id)
+
+          if (this.searchResults.length === 0) {
+            return this.updateDisplay()
+          }
+
+          this.selectNextSearchResult()
+        })
+      })
+    })
+    this.table.key([ 'n' ], () => {
+      this.selectNextSearchResult()
     })
     this.table.key([ 'pagedown' ], () => {
       let height = this.table.height - 1 // (1 for the header)
@@ -129,6 +154,23 @@ class Pager {
       })
     })
     this.table.key([ 'x' ], () => this.exportToFile())
+  }
+
+  selectNextSearchResult () {
+    if (this.searchResults.length === 0) {
+      return
+    }
+
+    let index = this.table.selected - 1
+
+    do {
+      if (++index >= this.database.length) {
+        index = 0
+      }
+    } while (this.searchResults.indexOf(this.database[index].id) === -1)
+
+    this.table.select(index + 1)
+    this.updateDisplay()
   }
 
   showEntry (id) {
