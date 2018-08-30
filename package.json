@@ -12,6 +12,7 @@
     "argparse": "^1.0.10",
     "async": "^2.6.1",
     "event-emitter": "^0.3.5",
+    "lower-case": "^1.1.4",
     "mocha": "^5.2.0",
     "neo-blessed": "https://github.com/plepe/neo-blessed.git",
     "readline": "^1.3.0",

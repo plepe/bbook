@@ -2,6 +2,8 @@ const async = require('async')
 const sqlite3 = require('sqlite3')
 const Sqlite3TransactionDatabase = require('sqlite3-transactions').TransactionDatabase
 
+const currentSort = require('./currentSort')
+
 class Database {
   constructor (filename) {
     if (!filename) {
@@ -64,7 +66,11 @@ class Database {
           async.map(
             result,
             (entry, callback) => this.get(entry.id, callback, transaction),
-            (err, result) => callback(err, result)
+            (err, result) => {
+              result.sort(currentSort)
+
+              callback(err, result)
+            }
           )
         }
       )
@@ -83,7 +89,11 @@ class Database {
 
       result[r.id][r.key] = r.value
     }, (err) => {
-      callback(err, Object.values(result))
+      result = Object.values(result)
+
+      result.sort(currentSort)
+
+      callback(err, result)
     })
   }
 
