@@ -173,10 +173,17 @@ class Pager {
     }
 
     let index = this.table.selected - 1
+    let turnAround = false
 
     do {
       if (++index >= this.database.length) {
+        if (turnAround) {
+          this.screen.render()
+          return
+        }
+
         index = 0
+        turnAround = true
       }
     } while (this.searchResults.indexOf(this.database[index].id) === -1)
 
