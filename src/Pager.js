@@ -14,6 +14,7 @@ class Pager {
     this.db = this.options.db
     this.screen = this.options.screen
     this.searchResults = []
+    this.filterString = ''
   }
 
   show () {
@@ -38,7 +39,7 @@ class Pager {
       left: 0,
       right: 0,
       height: 1,
-      content: 'q:quit, a:add, r:remove, /:search, n:search next'
+      content: 'q:quit, a:add, r:remove, /,n:search, f:filter'
     })
     this.screen.append(this.shortHelp)
 
@@ -96,6 +97,16 @@ class Pager {
 
           this.selectNextSearchResult()
         })
+      })
+    })
+    this.table.key([ 'f' ], () => {
+      inputTextbox('Filter', '', this.screen, (err, result) => {
+        if (err) {
+          throw (err)
+        }
+
+        this.filterString = result
+        this.updateDisplay()
       })
     })
     this.table.key([ 'n' ], () => {
@@ -196,7 +207,7 @@ class Pager {
       .filter(row => row.pager)
       .map(row => row.title)
 
-    this.db.search('', (err, result) => {
+    this.db.search(this.filterString, (err, result) => {
       if (err) {
         throw (err)
       }
