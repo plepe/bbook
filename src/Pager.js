@@ -170,7 +170,7 @@ class Pager {
     } while (this.searchResults.indexOf(this.database[index].id) === -1)
 
     this.table.select(index + 1)
-    this.updateDisplay()
+    this.screen.render()
   }
 
   showEntry (id) {
