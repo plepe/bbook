@@ -1,6 +1,6 @@
 {
   "name": "bbook",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "bbook - an addressbook written in nodejs with blessed. A drop-in replacement for abook",
   "main": "src/index.js",
   "bin": {
